@@ -24,6 +24,29 @@ app.get("/", (req, res) => {
 })
 
 
+app.get('/queue', async (req, res) => {
+  try {
+    const queue = await client.query(
+      'SELECT * FROM song_queue'
+    );
+    res.json(queue.rows);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.get('/next', async (req, res) => {
+  try {
+    const queue = await client.query(
+      'SELECT * FROM song_queue'
+    );
+    res.json(queue.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+
 //  Add New Song to Queue: takes in artist and link strings in request body 
 //  and inserts values into song_queue table with SQL query.
 app.post("/queue", async(req, res) => {
@@ -39,6 +62,8 @@ app.post("/queue", async(req, res) => {
         console.log(err.stack);
       }
 });
+
+
 
 
 

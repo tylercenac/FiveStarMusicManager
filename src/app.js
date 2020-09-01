@@ -21,7 +21,7 @@ const twitchClient = new tmi.Client(options);
 
 twitchClient.connect().catch(console.error);
 
-twitchClient.on('message', (channel, userstate, message, self) => {
+twitchClient.on('message', async (channel, userstate, message, self) => {
 
 
     const params = message.split(" ");
@@ -34,8 +34,11 @@ twitchClient.on('message', (channel, userstate, message, self) => {
     if(params[0].toLowerCase() === '!queue'){
 
         // COMMAND: "!queue" returns the next person in the queue
-        if(params.length===1)
-            twitchClient.say(channel, `The next person in queue is: `);
+        if(params.length===1){
+            
+            const result = await axios.get('http://localhost:3001/next');
+            twitchClient.say(channel, `The next person in queue is: ${result.data.artist}`);
+        }
         else{  // COMMAND: "!queue <link>" adds the artist and song link to the queue
 
             axios({
