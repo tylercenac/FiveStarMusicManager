@@ -1,5 +1,6 @@
 import tmi from 'tmi.js'
 import { CHANNEL_NAME, OAUTH_TOKEN, BOT_USERNAME, BLOCKED_WORDS } from './constants';
+import axios from 'axios';
 
 
 const options = {
@@ -36,6 +37,16 @@ twitchClient.on('message', (channel, userstate, message, self) => {
         if(params.length===1)
             twitchClient.say(channel, `The next person in queue is: `);
         else{  // COMMAND: "!queue <link>" adds the artist and song link to the queue
+
+            axios({
+                method: 'post',
+                url: 'http://localhost:3001/queue',
+                data: {
+                    artist: userstate.username,
+                    link: params[1]
+                }
+            });
+
             twitchClient.say(channel, `@${userstate.username}, your song has been submitted to the queue!`);
         }
             
