@@ -20,8 +20,10 @@ const client = new tmi.Client(options);
 client.connect().catch(console.error);
 
 client.on('message', (channel, userstate, message, self) => {
+
     if(self) return;
-    if(userstate.username === BOT_USERNAME) return;
+    //if(userstate.username === BOT_USERNAME) return;
+    //client.say(channel, 'test123');
 	if(message.toLowerCase() === '!hello') {
 		client.say(channel, `@${userstate.username}, heya!`);
     }
@@ -31,19 +33,22 @@ client.on('message', (channel, userstate, message, self) => {
 });
 
 
-function checkTwitchChat(username, message, channel) {
+function checkTwitchChat(userstate, message, channel) {
 
     let shouldSendMessage = false;
 
     shouldSendMessage = BLOCKED_WORDS.some(blockedWord => message.includes(blockedWord.toLowerCase()));
 
+
     if(shouldSendMessage){
 
-        client.say(channel, `Sorry @${username.username}! You're message was deleted.`);
+        client.say(channel, `Sorry @${userstate.username}! You're message was deleted.`);
 
-        client.deletemessage(channel, username.id );
+        client.deletemessage(channel, userstate.id );
 
     }
+
+    
     
 
 }
