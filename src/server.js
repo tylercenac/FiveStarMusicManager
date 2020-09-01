@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const client = require("./db");
-
+import axios from 'axios';
 
 //---app express/cors---//
 app.use(cors());
@@ -35,12 +35,23 @@ app.get('/queue', async (req, res) => {
   }
 });
 
-app.get('/next', async (req, res) => {
+app.get('/current', async (req, res) => {
   try {
     const queue = await client.query(
       'SELECT * FROM song_queue'
     );
     res.json(queue.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+  }
+});
+
+app.get('/next', async (req, res) => {
+  try {
+    const queue = await client.query(
+      'SELECT * FROM song_queue'
+    );
+    res.json(queue.rows[1]);
   } catch (err) {
     console.error(err.message);
   }
@@ -63,7 +74,22 @@ app.post("/queue", async(req, res) => {
       }
 });
 
+app.delete("/gonext", async(req, res) => {
 
+
+  const result = await axios.get('http://localhost:3001/current');
+
+  console.log(result);
+
+  try{
+    await client.query('DELETE FROM song_queue WHERE id = $1', [result.data.id]);
+    res.json('Submission removed from queue');
+  }catch(err){
+    console.error(err.message);
+  }
+
+
+});
 
 
 
