@@ -15,17 +15,30 @@ const options = {
 	channels: [ CHANNEL_NAME ]
 }
 
-const client = new tmi.Client(options);
+//const client = new tmi.Client(options);
+const twitchClient = new tmi.Client(options);
 
-client.connect().catch(console.error);
+twitchClient.connect().catch(console.error);
 
-client.on('message', (channel, userstate, message, self) => {
+twitchClient.on('message', (channel, userstate, message, self) => {
+
+
+    const params = message.split(" ");
 
     if(self) return;
     //if(userstate.username === BOT_USERNAME) return;
-    //client.say(channel, 'test123');
-	if(message.toLowerCase() === '!hello') {
-		client.say(channel, `@${userstate.username}, heya!`);
+	if(params[0].toLowerCase() === '!hello') {
+		twitchClient.say(channel, `@${userstate.username}, heya!`);
+    }
+    if(params[0].toLowerCase() === '!queue'){
+
+        // COMMAND: "!queue" returns the next person in the queue
+        if(params.length===1)
+            twitchClient.say(channel, `The next person in queue is: `);
+        else{  // COMMAND: "!queue <link>" adds the artist and song link to the queue
+            twitchClient.say(channel, `@${userstate.username}, your song has been submitted to the queue!`);
+        }
+            
     }
     
     checkTwitchChat(userstate, message, channel);
@@ -42,9 +55,9 @@ function checkTwitchChat(userstate, message, channel) {
 
     if(shouldSendMessage){
 
-        client.say(channel, `Sorry @${userstate.username}! You're message was deleted.`);
+        twitchClient.say(channel, `Sorry @${userstate.username}! You're message was deleted.`);
 
-        client.deletemessage(channel, userstate.id );
+        twitchClient.deletemessage(channel, userstate.id );
 
     }
 
