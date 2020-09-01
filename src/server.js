@@ -76,10 +76,7 @@ app.post("/queue", async(req, res) => {
 
 app.delete("/gonext", async(req, res) => {
 
-
   const result = await axios.get('http://localhost:3001/current');
-
-  console.log(result);
 
   try{
     await client.query('DELETE FROM song_queue WHERE id = $1', [result.data.id]);
